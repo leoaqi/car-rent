@@ -1,0 +1,65 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+/* Progress bar styling */
+#nprogress .bar {
+    background: var(--color-primary) !important;
+    height: 3px !important;
+}
+
+#nprogress .peg {
+    box-shadow: 0 0 10px var(--color-primary), 0 0 5px var(--color-primary) !important;
+}
+
+#nprogress .spinner-icon {
+    border-top-color: var(--color-primary) !important;
+    border-left-color: var(--color-primary) !important;
+}
+
+@theme {
+
+    --font-poppins: 'Poppins', sans-serif;
+        /* Primary Colors */
+    --color-primary: #AD2026;
+    --color-primary-100: #EECCCE;
+    --color-primary-200: #DEA1A4;
+    --color-primary-300: #CD767A;
+    --color-primary-400: #BD4B50;
+    --color-primary-500: #AD2026;
+    --color-primary-600: #8A1A1E;
+    --color-primary-700: #681317;
+    --color-primary-800: #450D0F;
+    --color-primary-900: #230608;
+
+    /* Error Colors */
+    --color-error-50: #FBEBEA;
+    --color-error-100: #F8D7D5;
+    --color-error-200: #F1AEAA;
+    --color-error-300: #E98680;
+    --color-error-400: #E25D55;
+    --color-error-500: #DB352B;
+    --color-error-600: #AF2A22;
+    --color-error-700: #83201A;
+    --color-error-800: #581511;
+    --color-error-900: #2C0B09;
+
+    /* Natural Colors */
+    --color-natural-100: #EDEDED;
+    --color-natural-200: #DBDBDB;
+    --color-natural-300: #CACACA;
+    --color-natural-600: #888888;
+
+    /* Success Colors */
+    --color-success-50: #C7F7E1;
+    --color-success-500: #00B45F;
+
+    /* Warning Colors */
+    --color-warning-100: #FDEFCF;
+
+    /* Text Colors */
+    --color-text-primary: #030303;
+    --color-text-secondary: #686868;
+    --color-text-tertiary: #B3B3B3;
+    --color-foreground: #F1F1F1;
+}
