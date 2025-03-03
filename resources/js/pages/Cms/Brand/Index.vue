@@ -6,7 +6,7 @@
     </Head>
     <div class="flex flex-row justify-between items-center">
         <h1 class="font-medium text-xl">Master Data Brand</h1>
-        <ButtonAdd>
+        <ButtonAdd @click="addNewBrand">
             <h1 class="text-xs font-medium">+ Add New Brand</h1>
         </ButtonAdd>
     </div>
@@ -25,8 +25,8 @@
                         </td>
                         <td class="py-5 px-4 border-b border-natural-200 text-xs font-normal ">
                             <div class="flex flex-row gap-2.5">
-                                <img :src="icEdit" alt="" class="hover:cursor-pointer">
-                                <img :src="icDelete" alt="" class="hover:cursor-pointer">
+                                <img :src="icEdit" v-on:click="editBrand(brand)" alt="" class="hover:cursor-pointer">
+                                <img :src="icDelete" v-on:click="onShowModalDelete(brand)" alt="" class="hover:cursor-pointer">
                             </div>
                         </td>
                     </tr>
@@ -34,39 +34,59 @@
             </table>
         </div>
     </div>
-    <!-- <div>
-        <Pagination :paginator="brandData" />
-    </div> -->
 
     <Pagination :data="brandData" />
+
+    <ModalDelete v-model="showModalDelete" @handleDelete="handleDelete" title="Delete Brand" 
+        description="Are you sure want to delete this brand? Please check carefully before
+                delete" />
 </template>
 
 <script setup>
 import { defineProps, ref } from 'vue';
-import { Head } from '@inertiajs/vue3'
+import { Head ,router} from '@inertiajs/vue3'
 import AuthanticateLayout from '../Layout/AuthanticateLayout.vue'
-import { router } from '@inertiajs/vue3';
 import ButtonAdd from '../Components/ButtonAdd.vue';
 import icEdit from '../../../../../public/icons/ic_edit.svg';
 import icDelete from '../../../../../public/icons/ic_delete.svg';
 import Pagination from '../Components/Pagination.vue';
+import ModalDelete from '../Components/ModalDelete.vue';
 
 defineOptions({
     layout: AuthanticateLayout
 })
 
+const showModalDelete = ref(false)
+const selectedBrand = ref(null);
+
 const props = defineProps({
     brandData: Object
 })
 
-const perPage = ref(props.brandData.per_page.toString());
+const addNewBrand = () => {
+    router.visit('/brand/add');
+};
 
-// Methods
-function changePerPage() {
-    router.get(props.brandData.path, { per_page: perPage.value }, {
-        preserveState: true,
+const editBrand = (brand) => {
+    router.visit(`/brand/${brand.id}/edit`);
+};
+
+const handleClose = () => {
+    router.delete(`/brand/${selectedBrand.value.id}`, {
         preserveScroll: true,
-        replace: true
+        onSuccess: () => {
+            showModalDelete.value = false;
+            selectedBrand.value = null;
+        },
     });
+}
+
+const handleDelete = () => {
+    handleClose()
+}
+
+const onShowModalDelete = (data) => {
+    selectedBrand.value = data 
+    showModalDelete.value = true
 }
 </script>

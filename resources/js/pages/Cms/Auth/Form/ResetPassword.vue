@@ -156,7 +156,7 @@ const backToLogin = ()=>{
 </script>
 
 <style scoped>
-@reference '../../../../../../css/app.css';
+@reference '../../../../../css/app.css';
 
 .checkbock{
     @apply h-[14px] w-[14px] text-primary-500 rounded-[4px]

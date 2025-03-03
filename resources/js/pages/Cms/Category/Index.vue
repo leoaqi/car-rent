@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-row justify-between items-center">
         <h1 class="font-medium text-xl">Master Data Category</h1>
-        <ButtonAdd>
+        <ButtonAdd @click="router.visit('/category/add')">
             <h1 class="text-xs font-medium">+ Add New Category</h1>
         </ButtonAdd>
     </div>
@@ -20,8 +20,9 @@
                         </td>
                         <td class="py-5 px-4 border-b border-natural-200 text-xs font-normal ">
                             <div class="flex flex-row gap-2.5">
-                                <img :src="icEdit" alt="" class="hover:cursor-pointer">
-                                <img :src="icDelete" alt="" class="hover:cursor-pointer">
+                                <img :src="icEdit" v-on:click="editCategory(category)" alt="" class="hover:cursor-pointer">
+                                <img :src="icDelete" v-on:click="onShowModalDelete(category)" alt=""
+                                    class="hover:cursor-pointer">
                             </div>
                         </td>
                     </tr>
@@ -31,15 +32,20 @@
     </div>
 
     <Pagination :data="data" />
+    <ModalDelete v-model="showModalDelete" @handleDelete="handleDelete" title="Delete Category" 
+        description="Are you sure want to delete this category? Please check carefully before
+                delete" />
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
+import { defineProps, ref } from 'vue';
 import AuthanticateLayout from '../Layout/AuthanticateLayout.vue'
 import ButtonAdd from '../Components/ButtonAdd.vue';
 import icEdit from '../../../../../public/icons/ic_edit.svg';
 import icDelete from '../../../../../public/icons/ic_delete.svg';
 import Pagination from '../Components/Pagination.vue'
+import ModalDelete from '../Components/ModalDelete.vue';
+import { router } from '@inertiajs/vue3'
 
 defineOptions({
     layout: AuthanticateLayout
@@ -48,4 +54,30 @@ defineOptions({
 const props = defineProps({
     data: Object
 })
+
+const showModalDelete = ref(false)
+const selectCategory = ref(null);
+
+const handleClose = () => {
+    router.delete(`/category/${selectCategory.value.id}`, {
+        preserveScroll: true,
+        onSuccess: () => {
+            showModalDelete.value = false;
+            selectCategory.value = null;
+        },
+    });
+}
+
+const handleDelete = () => {
+    handleClose()
+}
+
+const editCategory = (category) => {
+    router.visit(`/category/${category.id}/edit`)
+}
+
+const onShowModalDelete = (data) => {
+    selectCategory.value = data
+    showModalDelete.value = true
+}
 </script>

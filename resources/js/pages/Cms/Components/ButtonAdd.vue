@@ -1,6 +1,6 @@
 <template>
     <button @click="handleClick"
-        class="bg-primary-500 hover:bg-primary400 text-white p-3 rounded-md">
+        class="bg-primary-500 hover:bg-primary-400 hover:cursor-pointer text-white p-3 rounded-md">
         <slot/>
     </button>
 </template>

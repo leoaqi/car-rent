@@ -14,7 +14,7 @@
     </div>
 
     <span class="text-sm font-normal text-text-primary">
-      {{ data.from }}-{{ data.to }} of {{ data.total }}
+      {{ data.from ?? 0 }} - {{ data.to ?? 0 }} of {{ data.total }}
     </span>
 
     <div class="flex gap-1.5">

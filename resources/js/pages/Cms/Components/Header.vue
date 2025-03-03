@@ -5,10 +5,10 @@
         <ol class="inline-flex items-center space-x-2">
           <li v-for="(crumb, index) in breadcrumbs" :key="index" class="inline-flex items-center">
             <template v-if="index < breadcrumbs.length - 1">
-              <Link href="crumb.path" class="text-text-secondary text-xs font-normal hover:text-primary-500">
-                {{ crumb.name }}
+              <Link :href="crumb.path" class="text-text-secondary text-xs font-normal hover:text-primary-500">
+              {{ crumb.name }}
               </Link>
-              <span class="mx-2 text-gray-500">></span>
+              <span class="mx-2 text-gray-500"><i class="ri-arrow-drop-right-line"></i></span>
             </template>
             <span v-else class="text-primary-500 text-xs font-semibold">
               {{ crumb.name }}
@@ -43,15 +43,14 @@ function logout() {
 }
 
 const breadcrumbs = computed(() => {
-  const path = page.url.split('/').filter(Boolean);
+  const cleanPath = page.url.split('?')[0]
+  const path = cleanPath.split('/').filter(segment => {
+    return Boolean(segment) && !segment.includes('per_page')
+      && !segment.includes('page') && !segment.includes('query')
+      && !segment.match(/^\d+$/)
+  });
   const crumbs = [];
   let fullPath = '';
-
-  // Always add home as first breadcrumb
-  // crumbs.push({
-  //   name: 'Home',
-  //   path: '/'
-  // });
 
   // Build breadcrumbs based on current URL
   path.forEach((segment) => {
