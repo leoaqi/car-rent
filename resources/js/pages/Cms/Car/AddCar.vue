@@ -34,32 +34,32 @@
                 <div class="flex flex-col lg:flex-row gap-1.5">
                     <div class="w-full">
                         <label class="label">Category</label>
-                        <Dropdown v-model="selectedCategory" :options="categories" placeholder="Select cateogry"
+                        <DropdownCustom v-model="selectedCategory" :options="categories" placeholder="Select cateogry"
                             header="Category" id="category" labelKey="name" valueKey="id" @change="updateCategoryId" />
                     </div>
                     <div class="w-full">
                         <label class="label">Brand</label>
-                        <Dropdown v-model="selectedBrand" :options="brands" placeholder="Select brand" header="Brand"
+                        <DropdownCustom v-model="selectedBrand" :options="brands" placeholder="Select brand" header="Brand"
                             id="brand" labelKey="name" valueKey="id" @change="updateBrandId" />
                     </div>
                 </div>
                 <label class="label">Prices</label>
                 <div v-for="(price, index) in form.prices" :key="index"
-                    class="flex flex-row gap-4 mb-3 items-start justify-center">
-                    <div class="w-1/2">
-                        <Dropdown v-model="price.type" :options="getAvailablePriceTypes(index)"
+                    class="flex flex-col lg:flex-row gap-4 mb-0 lg:mb-3 items-start justify-center">
+                    <div class="w-full lg:w-1/2">
+                        <DropdownCustom v-model="price.type" :options="getAvailablePriceTypes(index)"
                             placeholder="Select price type" header="Price Type" :id="`price-type-${index}`"
                             labelKey="name" valueKey="id" />
                     </div>
-                    <div class="w-1/2">
+                    <div class="w-full lg:w-1/2">
                         <input type="text" class="text-field" placeholder="Enter price amount"
                             :value="formatToIDR(price.amount)" @input="formatPrice($event, index)" />
                     </div>
-                    <button type="button" @click="removePrice(index)" class="text-red-500 hover:text-red-700 pt-2">
-                        <i class="ri-delete-bin-line text-xl"></i>
+                    <button type="button" @click="removePrice(index)" class="text-red-500 hover:text-red-700 pt-0 lg:pt-2">
+                        <i class="ri-delete-bin-line text-xl hover:cursor-pointer"></i>
                     </button>
                 </div>
-                <button type="button" @click="addPrice"
+                <button v-if="form.prices.length < priceTypes.length" type="button" @click="addPrice"
                     class="text-primary-500 hover:text-primary-600 text-sm font-medium mt-2">
                     + Add Price
                 </button>
@@ -94,20 +94,23 @@
                 <textarea cols="30" v-model="form.description" rows="3" class="text-field"></textarea>
             </div>
         </form>
-        <div class="w-full h-[1px] bg-natural200 my-3"></div>
+        <div class="w-full h-[1px] bg-natural-200 my-3"></div>
         <div class="flex flex-col md:flex-row justify-center py-4 px-6 gap-4 mx-auto max-w-screen-xl">
             <ButtonForm title="Cancel" type="outline-border" class="w-full  md:w-[232px] " @click="back" />
-            <ButtonForm title="Add New Car" class="w-full md:w-[254px]" @click="handleSubmit" />
+            <ButtonForm :title="isEditing ? 'Edit Car' : 'Add New Car'" class="w-full md:w-[254px]"
+                @click="handleSubmit" />
         </div>
     </div>
 </template>
 
 <script setup>
 import AuthanticateLayout from '../Layout/AuthanticateLayout.vue'
-import { computed, defineProps, defineOptions, ref } from 'vue'
+import { computed, defineProps, defineOptions, ref, onMounted } from 'vue'
 import { useForm, router } from '@inertiajs/vue3'
-import Dropdown from '../Components/Dropdown.vue'
+import DropdownCustom from '../Components/DropdownCustom.vue'
 import ButtonForm from '../Components/ButtonForm.vue'
+import { Toast } from '../../../utils/toast'
+
 defineOptions({
     layout: AuthanticateLayout,
 })
@@ -129,22 +132,36 @@ const props = defineProps({
 
 const isEditing = computed(() => !!props.car);
 
-const selectedCategory = ref(null)
-const selectedBrand = ref(null)
+const toast = new Toast()
+
+const selectedCategory = ref(props.car?.category || null)
+const selectedBrand = ref(props.car?.brand || null)
+
+const fileInput = ref(null);
+const previewImages = ref([]);
+
+const priceTypes = [
+    { id: 1, name: 'Auto Matic', value: 'automatic' },
+    { id: 2, name: 'Manual', value: 'manual' },
+    { id: 3, name: 'With Driver', value: 'with-driver' }
+];
 
 const form = useForm({
     name: props.car?.name || '',
-    prices: props.car?.prices || [{ type: null, amount: '' }],
-    images: [],
+    prices: props.car?.prices.map(price => ({
+        type: priceTypes.find(t => t.value == price.type),
+        amount: price.price,
+    })) || [{ type: null, amount: '' }],
+    images: props.car?.images || [],
+    new_images: [],
     description: props.car?.description || '',
     cc: props.car?.cc || '',
     capacity: props.car?.capacity || '',
     year: props.car?.year || '',
     category_id: props.car?.category_id || null,
-    brand_id: props.car?.brand_id || null,
+    brand_id: props.car?.brand.id || null,
 
 });
-
 const addPrice = () => {
     form.prices.push({ type: null, amount: '' });
 };
@@ -156,11 +173,13 @@ const removePrice = (index) => {
     }
 };
 
-const priceTypes = [
-    { id: 1, name: 'Auto Matic', value: 'automatic' },
-    { id: 2, name: 'Manual', value: 'manual'  },
-    { id: 3, name: 'With Driver', value : 'with-driver' }
-];
+onMounted(() => {
+    if (props.car?.images) {
+        props.car.images.forEach(image => {
+            previewImages.value.push(`/storage/${image.image}`);
+        });
+    }
+});
 
 const getAvailablePriceTypes = (currentIndex) => {
     const selectedTypes = form.prices
@@ -185,8 +204,6 @@ const formatPrice = (event, index) => {
     form.prices[index].amount = value;
 };
 
-const fileInput = ref(null);
-const previewImages = ref([]);
 
 const updateCategoryId = (category) => {
     form.category_id = category?.id || null;
@@ -197,17 +214,24 @@ const updateBrandId = (brand) => {
 
 const handleFileChange = (event) => {
     const files = Array.from(event.target.files);
-    const maxFiles = 5 - previewImages.value.length;
+    const maxFiles = 5 - (previewImages.value.length + form.images.length);
     const selectedFiles = files.slice(0, maxFiles);
 
     selectedFiles.forEach(file => {
-        if (file.type.startsWith('image/')) {
+        if (file.type.startsWith('image/') && !isEditing) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 previewImages.value.push(e.target.result);
             };
             reader.readAsDataURL(file);
             form.images.push(file);
+        }else{
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImages.value.push(e.target.result);
+            };
+            reader.readAsDataURL(file);
+            form.new_images.push(file);
         }
     });
 };
@@ -215,22 +239,71 @@ const handleFileChange = (event) => {
 const removeImage = (index) => {
     event.preventDefault();
     event.stopPropagation();
-    previewImages.value.splice(index, 1);
-    form.images.splice(index, 1);
+    
+    const existingImagesCount = form.images.length;
+    
+    if (index < existingImagesCount) {
+        // Removing existing image
+        form.images.splice(index, 1);
+        previewImages.value.splice(index, 1);
+    } else {
+        // Removing new image
+        const newIndex = index - existingImagesCount;
+        form.new_images.splice(newIndex, 1);
+        previewImages.value.splice(index, 1);
+    }
 };
 
-const back = ()=>{
+const back = () => {
     router.visit('/car');
 }
 
 const handleSubmit = () => {
-    form.post('/car/add', {
-        onSuccess: () => {
-            router.visit('/car');
-        },
-        onError: (errors) => {
-            form.errors = errors.errors;
-        },
-    });
+    if (isEditing.value) {
+        const formData = new FormData();
+        
+        // Append basic form fields
+        formData.append('_method', 'PUT');
+        formData.append('name', form.name);
+        formData.append('description', form.description);
+        formData.append('category_id', form.category_id);
+        formData.append('brand_id', form.brand_id);
+        formData.append('cc', form.cc);
+        formData.append('year', form.year);
+        formData.append('capacity', form.capacity);
+        
+        // Append existing images
+        formData.append('images', JSON.stringify(form.images.map(img => img.id)));
+        
+        // Append new images
+        if (form.new_images.length > 0) {
+            form.new_images.forEach(file => {
+                formData.append('new_images[]', file);
+            });
+        }
+        
+        // Append prices
+        formData.append('prices', JSON.stringify(form.prices));
+        
+        router.post(`/car/${props.car.id}`, formData, {
+            onSuccess: () => {
+                router.visit('/car');
+            },
+            onError: (errors) => {
+                form.errors = errors.errors;
+            },
+        });
+    } else {
+        form.post('/car/add', {
+            onSuccess: () => {
+                toast.success('Success add car');
+                router.visit('/car');
+            },
+            onError: (errors) => {
+                form.errors = errors.errors;
+            },
+        });
+    }
+
 }
 </script>

@@ -6,7 +6,7 @@
         <div :class="[isError ? 'block' : 'hidden']" class="w-full mb-10 bg-error-50 p-4 rounded-[4px] mt-10 block">
             <p class="text-error-500 font-semibold">Error! <span class="font-normal">{{ errorMessage }}</span></p>
         </div>
-        <form @submit.prevent="form.post('/login')">
+        <form @submit.prevent="form.post('/login')" @keyup.enter="signIn">
             <div>
                 <label for="email" class="block text-content font-medium mb-2 text-textPrimary mt-10">Email</label>
                 <div class="mt-1 relative rounded-md shadow-sm">
@@ -62,21 +62,30 @@ import { ref, computed } from 'vue';
 import { Link, useForm } from '@inertiajs/vue3';
 import Button from '../../Components/Button.vue';
 import logoAqi from '../../../../../../public/images/logoaqi.png'
+import {Toast} from '../../../../utils/toast'
 
 const email = ref('')
 const password = ref('')
 const errorMessage = ref('')
 const showPassword = ref(false)
 const isError = ref(false)
+const toast = new Toast()
 
 const togglePasswordVisibility = computed(() => {
     showPassword.value = !showPassword.value
 })
 
 function signIn() {
+    if (!form.email || !form.password) {
+        toast.errors({
+            message: 'Email and password are required'
+        });
+        return;
+    }
     form.post('/login', {
         onError: (error)=> {
             console.log(error);
+            toast.errors(error)
             
             isError.value = true
             errorMessage.value = error.message

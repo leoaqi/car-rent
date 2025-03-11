@@ -23,7 +23,7 @@
         <div class="horizontal-divider"></div>
         <div class="flex flex-col md:flex-row justify-center py-4 px-6 gap-4 mx-auto max-w-screen-xl">
             <ButtonForm title="Cancel" type="outline-border" class="w-full md:w-[232px]"
-                @click="router.visit('/brand')" />
+                @click="router.visit('/category')" />
             <ButtonForm @click="submit" :title=" isEditing ? 'Edit Category' : 'Add New Category' " class="w-full md:w-[232px]" type="block" />
         </div>
     </div>
@@ -34,6 +34,7 @@ import { defineProps, defineOptions, computed } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
 import AuthanticateLayout from '../Layout/AuthanticateLayout.vue';
 import ButtonForm from '../Components/ButtonForm.vue';
+import { Toast } from '../../../utils/toast'
 
 const props = defineProps({
     category: {
@@ -48,17 +49,24 @@ defineOptions({
     layout: AuthanticateLayout
 });
 
+const toast = new Toast();
+
 const form = useForm({
     name: props.category?.name || ''
 });
 
 const submit = () => {
+    if(!form.name) {
+        form.errors.name = 'Category name is required';
+        return;
+    }
     if (isEditing.value) {
         form.put('/category/' + props.category.id);
     } else {
         form.post('/category/add', {
             preserveScroll: true,
             onSuccess: () => {
+                toast.success('Category added successfully');
                 router.visit('/category');
             },
             onError: () => {

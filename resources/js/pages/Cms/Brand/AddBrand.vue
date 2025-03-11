@@ -34,6 +34,7 @@ import { defineProps, defineOptions, computed } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
 import AuthanticateLayout from '../Layout/AuthanticateLayout.vue';
 import ButtonForm from '../Components/ButtonForm.vue';
+import {Toast} from '../../../utils/toast'
 
 const props = defineProps({
     brand: {
@@ -48,6 +49,8 @@ defineOptions({
     layout: AuthanticateLayout
 });
 
+const toast = new Toast()
+
 const form = useForm({
     name: props.brand?.name || ''
 });
@@ -59,6 +62,7 @@ const submit = () => {
         form.post('/brand/add', {
             preserveScroll: true,
             onSuccess: () => {
+                toast.success('Brand has been added successfully')
                 router.visit('/brand');
             },
             onError: () => {

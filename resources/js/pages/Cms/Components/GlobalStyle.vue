@@ -23,4 +23,22 @@
 .label{
   @apply block text-sm font-medium text-gray-700 mb-2 pt-3.5
 }
+
+.text-field-disabled{
+  @apply bg-natural-100 border border-natural-200 p-2 rounded-sm text-neutral-500
+}
+
+.checkbock {
+    @apply h-[14px] w-[14px] text-primary-500 rounded-[4px] accent-primary-500;
+}
+
+/* Override default disabled styles */
+input[type="checkbox"]:disabled {
+    opacity: 1 !important;
+}
+
+input[type="checkbox"]:disabled:checked {
+    background-color: theme('colors.primary.500') !important;
+    border-color: theme('colors.primary.500') !important;
+}
 </style>

@@ -46,6 +46,7 @@ import icDelete from '../../../../../public/icons/ic_delete.svg';
 import Pagination from '../Components/Pagination.vue'
 import ModalDelete from '../Components/ModalDelete.vue';
 import { router } from '@inertiajs/vue3'
+import {Toast} from '../../../utils/toast'
 
 defineOptions({
     layout: AuthanticateLayout
@@ -55,6 +56,8 @@ const props = defineProps({
     data: Object
 })
 
+const toast = new Toast()
+
 const showModalDelete = ref(false)
 const selectCategory = ref(null);
 
@@ -62,6 +65,7 @@ const handleClose = () => {
     router.delete(`/category/${selectCategory.value.id}`, {
         preserveScroll: true,
         onSuccess: () => {
+            toast.success('Category deleted successfully')
             showModalDelete.value = false;
             selectCategory.value = null;
         },

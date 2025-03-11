@@ -51,10 +51,13 @@ import icEdit from '../../../../../public/icons/ic_edit.svg';
 import icDelete from '../../../../../public/icons/ic_delete.svg';
 import Pagination from '../Components/Pagination.vue';
 import ModalDelete from '../Components/ModalDelete.vue';
+import {Toast} from '../../../utils/toast'
 
 defineOptions({
     layout: AuthanticateLayout
 })
+
+const toast = new Toast()
 
 const showModalDelete = ref(false)
 const selectedBrand = ref(null);
@@ -75,6 +78,7 @@ const handleClose = () => {
     router.delete(`/brand/${selectedBrand.value.id}`, {
         preserveScroll: true,
         onSuccess: () => {
+            toast.success('Brand has been deleted')
             showModalDelete.value = false;
             selectedBrand.value = null;
         },
@@ -86,6 +90,7 @@ const handleDelete = () => {
 }
 
 const onShowModalDelete = (data) => {
+    toast.success('Brand has been deleted')
     selectedBrand.value = data 
     showModalDelete.value = true
 }

@@ -92,7 +92,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="relative w-full mb-4" ref="dropdownRef">
+  <div class="relative w-full" ref="dropdownRef">
     <button
       type="button"
       @click="toggleDropdown"

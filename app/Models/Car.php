@@ -30,6 +30,10 @@ class Car extends Model
         return $this->hasMany(Price::class);
     }
 
+    public function rents(){
+        return $this->hasMany(Rent::class);
+    }
+
     public function saveImages(array $images): void
     {
         foreach ($images as $image) {

@@ -11,8 +11,7 @@
                         Password</label>
                     <div class="mt-1 relative rounded-md shadow-sm">
                         <input :type="showPassword ? 'text' : 'password'" id="password" v-model="password"
-                            class="block w-full pr-10 pl-3 py-3 border-form sm:text-sm"
-                            placeholder="********" />
+                            class="block w-full pr-10 pl-3 py-3 border-form sm:text-sm" placeholder="********" />
                         <!-- Ikon Mata dari Remix Icon -->
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
                             @click="togglePasswordVisibility">
@@ -40,7 +39,8 @@
                         </label>
                         <label class="inline-flex items-center mt-2">
                             <input type="checkbox" v-model="isValidNumber" :disabled="true"
-                                :class="['checkbock', !isValidNumber && password.trim().length > 0 ? 'border-error500' : 'border-natural300']" />
+                                class="checkbock disabled:opacity-100 accent-primary-500"
+                                :class="[!isValidNumber && password.trim().length > 0 ? 'border-error-500' : 'border-natural-300']" />
                             <span
                                 :class="['ml-2 text-gray-700 font-normal text-[12px]', !isValidNumber && password.trim().length > 0 ? 'text-primary500' : 'text-textPrimary']">At
                                 least include 1 number</span>
@@ -62,8 +62,7 @@
                         Password</label>
                     <div class="mt-1 relative rounded-md shadow-sm">
                         <input :type="showPasswordConfirm ? 'text' : 'password'" id="passwordconfirm"
-                            v-model="confirmPassword"
-                            class="block w-full pr-10 pl-3 py-3 border-form sm:text-sm"
+                            v-model="confirmPassword" class="block w-full pr-10 pl-3 py-3 border-form sm:text-sm"
                             placeholder="Re-type your password" />
                         <!-- Ikon Mata dari Remix Icon -->
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
@@ -78,13 +77,14 @@
             <Button @click="handleSubmit" title="Reset Password" />
             <Link href="/login"
                 class="flex text-body-3 my-6 font-medium text-primary500 justify-center items-center hover:underline">
-                Back to Sign In Page
+            Back to Sign In Page
             </Link>
         </div>
         <div v-if="isSuccess" class="pt-28">
             <div>
                 <h3 class="text-heading-3 font-medium">Change Password Success</h3>
-                <p class="text-content font-normal text-textScondary py-4">Your password has been change successfully. Try sign in again</p>
+                <p class="text-content font-normal text-textScondary py-4">Your password has been change successfully.
+                    Try sign in again</p>
             </div>
             <div class="pt-14">
                 <Button title="Sign In" @click="backToLogin" />
@@ -150,7 +150,7 @@ function handleSubmit() {
     }
 }
 
-const backToLogin = ()=>{
+const backToLogin = () => {
     // router.push('/login')
 }
 </script>
@@ -158,7 +158,7 @@ const backToLogin = ()=>{
 <style scoped>
 @reference '../../../../../css/app.css';
 
-.checkbock{
+.checkbock {
     @apply h-[14px] w-[14px] text-primary-500 rounded-[4px]
 }
 </style>
