@@ -42,7 +42,18 @@ const props = defineProps({
 const perPage = ref(props.data.per_page.toString() ?? 10);
 
 function changePerPage() {
-  router.get(props.data.path, { per_page: perPage.value }, {
+  const currentQuery = new URLSearchParams(window.location.search);
+  const params = {};
+
+  for (const [key, value] of currentQuery.entries()) {
+    if (key !== 'per_page') {
+      params[key] = value;
+    }
+  }
+  
+  params.per_page = perPage.value;
+
+  router.get(props.data.path, params, {
     preserveState: true,
     preserveScroll: true,
     replace: true

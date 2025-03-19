@@ -72,6 +72,8 @@ class CarController extends Controller
             'images' => 'required|array',
             'prices' => 'required|array',
             'images' => 'nullable|array',
+            'type' => 'required',
+            'gasoline' => 'required',
             'new_images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -83,6 +85,8 @@ class CarController extends Controller
             'cc' => $request->cc,
             'year' => $request->year,
             'capacity' => $request->capacity,
+            'type' => $request->type,
+            'gasoline' => $request->gasoline,
         ]);
         if ($request->hasFile('new_images')) {
             foreach ($request->file('new_images') as $image) {
@@ -130,6 +134,8 @@ class CarController extends Controller
                 'year' => 'required',
                 'capacity' => 'required',
                 'brand_id' => 'required',
+                'type' => 'required',
+                'gasoline' => 'required',
                 // Don't validate prices and images as arrays in the initial validation
             ]);
 
@@ -186,6 +192,8 @@ class CarController extends Controller
                 'cc' => $request->cc,
                 'year' => $request->year,
                 'capacity' => $request->capacity,
+                'type' => $request->type,
+                'gasoline' => $request->gasoline,
             ]);
 
             // Add new images
@@ -239,9 +247,14 @@ class CarController extends Controller
 
             return redirect()->back()->with('success', 'Car updated successfully');
         } catch (\Throwable $th) {
-            Log::error('Car update error: ' . $th->getMessage());
+            Log::error('Car update error: ', [
+                'error' => $th->getMessage(),
+                'trace' => $th->getTraceAsString(),
+            ]);
             return redirect()->back()->with('error', 'Failed to update car: ' . $th->getMessage())
                 ->withInput();
         }
     }
+
+    
 }

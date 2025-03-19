@@ -17,13 +17,36 @@
         </ol>
       </nav>
 
-      <div class="flex flex-row gap-8 items-center hover:cursor-pointer" @click="logout">
+      <!-- <div class="flex flex-row gap-8 items-center hover:cursor-pointer" @click="logout">
         <img :src="icBell" alt="Notifications" class="w-3 h-3 lg:w-5  lg:h-5 object-cover">
         <div class="hidden lg:flex flex-row items-center gap-3">
           <img :src="icProfile1" alt="Profile" class="w-[36px] h-[36px] rounded-full object-cover">
           <h1 class="text-sm font-normal text-text-primary">Hi, Administrator</h1>
         </div>
-        <i class="ri-menu-line flex w-5 h-5 lg:hidden"></i>
+        
+      </div> -->
+      <div class="flex flex-row gap-8 items-center w-fit">
+        <img :src="icBell" alt="Notifications" class="w-3 h-3 lg:w-5  lg:h-5 object-cover">
+        <a-dropdown :trigger="['click']" class="">
+          <a class="ant-dropdown-link hidden  lg:flex lg:cursor-pointer" @click.prevent>
+            <div class="hidden lg:flex flex-row items-center gap-3">
+              <img :src="icProfile1" alt="Profile" class="w-[36px] h-[36px] rounded-full object-cover">
+              <h1 class="text-sm font-normal text-text-primary">Hi, Administrator</h1>
+            </div>
+          </a>
+
+          <template #overlay>
+            <a-menu>
+              <a-menu-item>
+                <a href="#" @click.prevent="logout">Logout</a>
+              </a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
+        <i class="ri-menu-line flex w-5 h-5 lg:hidden" @click.prevent="showDrawer"></i>
+        <a-drawer v-model:open="open" class="!text-primary" placement="right" :bodyStyle="{ padding: 0 }">
+          <CustomSidebar @close="open = false" />
+        </a-drawer>
       </div>
     </div>
   </div>
@@ -31,12 +54,19 @@
 
 <script setup>
 import { usePage, useForm, Link } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import icBell from '../../../../../public/icons/ic_bell.svg';
 import icProfile1 from '../../../../../public/icons/ic_profile_1.png';
+import CustomSidebar from './CustomSidebarMobile.vue';
 
 const page = usePage();
 const form = useForm();
+
+const open = ref(false)
+
+const showDrawer = () => {
+  open.value = true;
+};
 
 function logout() {
   form.post('/logout');

@@ -41,6 +41,13 @@ export class Toast {
         // audio.play();
     }
 
+    error(message) {
+        this.notyf.dismissAll();
+        this.notyf.error(message);
+        // if you don't want to have audio, remove below lines
+        // otherwise adjust path
+        // const audio = new Audio('/path/to/your/error.mp3
+    }
     errors(errors) {
         this.notyf.dismissAll();
         Object.values(errors).forEach((value) => {

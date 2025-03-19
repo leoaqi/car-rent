@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-full lg:w-[400px] mb-5">
+  <div class="relative w-full lg:w-[400px]">
     <!-- Search Icon Left -->
     <div class="absolute left-4 top-1/2 -translate-y-1/2">
       <i class="ri-search-line text-gray-500"></i>

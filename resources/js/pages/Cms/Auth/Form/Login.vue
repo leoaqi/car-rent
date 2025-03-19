@@ -77,9 +77,7 @@ const togglePasswordVisibility = computed(() => {
 
 function signIn() {
     if (!form.email || !form.password) {
-        toast.errors({
-            message: 'Email and password are required'
-        });
+        toast.error('Email and password are required');
         return;
     }
     form.post('/login', {

@@ -1,5 +1,6 @@
 <template>
-    <div :class="[isHovered ? 'w-screen lg:w-[264px] ' : 'w-screen lg:w-fit']"
+    <!-- desktop -->
+    <div :class="[isHovered ? 'w-screen lg:w-[264px] ' : 'hidden lg:w-fit']"
         class="h-[70px] lg:h-screen bg-white shadow-lg transition-all duration-300 ease-in-out"
         @mouseenter="isHovered = true" @mouseleave="isHovered = false">
         <!-- Logo -->
@@ -12,11 +13,11 @@
         </div>
 
         <!-- Navigation Items -->
-        <nav class="pt-2 px-4 flex flex-row justify-between lg:flex-col w-full">
+        <nav class="pt-2 p-0 lg:px-4 flex flex-col w-full">
             <template v-for="item in menuItems" :key="item.name">
                 <div class="relative">
                     <div class="absolute md:inset-y-1 lg:inset-y-1 transition-all duration-300 ease-in-out" :class="[
-        { 'w-full h-[40px] z-0 bg-primary-100 rounded-lg hidden lg:inline': isActive(item.slug) && isHovered },
+        { 'w-full h-[40px] z-0 bg-primary-100 rounded-lg lg:inline': isActive(item.slug) && isHovered },
         { 'hidden z-0': !isActive(item.slug) }
     ]"></div>
                     <Link :href="item.slug" :class="[
@@ -31,7 +32,7 @@
                         <i class="w-6 h-6 transition-all duration-300 ease-in-out" :class="[item.icon]" />
                     </span>
                     <span :class="[
-        'transition-all duration-300 hidden',
+        'transition-all duration-300',
         isHovered ? 'opacity-100 w-auto lg:inline' : 'hidden md:hidden'
     ]">
                         {{ item.name }}
@@ -42,6 +43,7 @@
             </template>
         </nav>
     </div>
+
 </template>
 
 <script setup>
@@ -66,5 +68,6 @@ const menuItems = [
     { name: 'Rent', slug: '/rent', icon: 'ri-money-dollar-circle-line' },
     { name: 'Tourist Destination', slug: '/destination', icon: 'ri-road-map-line' },
     { name: 'Tourist Package', slug: '/tour', icon: 'ri-plane-line' },
+    { name: 'Bookings', slug: '/booking', icon: 'ri-calendar-check-line' },
 ];
 </script>

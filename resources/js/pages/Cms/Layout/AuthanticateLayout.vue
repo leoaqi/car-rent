@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col lg:flex-row h-screen ">
       <!-- Sidebar -->
-      <Sidebar class="hidden lg:flex flex-col" />
+      <CustomSidebar class="hidden lg:flex lg:flex-col" />
   
       <!-- Main Content Area -->
       <div class="flex-1 flex flex-col overflow-y-auto [&::-webkit-scrollbar]:hidden">
@@ -15,11 +15,10 @@
           </main>
         </div>
       </div>
-      <Sidebar class="flex flex-row bottom-0 lg:hidden" />
     </div>
   </template>
   
   <script setup>
-  import Sidebar from '../Components/Sidebar.vue';
+  import CustomSidebar from '../Components/CustomSidebar.vue';
   import Header from '../Components/Header.vue';
   </script>

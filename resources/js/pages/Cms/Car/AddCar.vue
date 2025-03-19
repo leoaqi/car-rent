@@ -20,7 +20,16 @@
                 <div class="flex flex-col lg:flex-row gap-2">
                     <div class="w-full">
                         <label class="label">Year</label>
-                        <input type="number" v-model="form.year" class="text-field" placeholder="Enter year" />
+                        <VueDatePicker v-model="form.year" 
+                            year-picker 
+                            class="dp__main"
+                            :max-date="new Date()" >
+                            <template
+                                #dp-input="{ value}">
+                                <input type="text" :value="value" class="text-field" placeholder="Select year"/>
+                            </template>
+                        </VueDatePicker>
+                        <!-- <input type="number" v-model="form.year" class="text-field" placeholder="Enter year" /> -->
                     </div>
                     <div class="w-full">
                         <label class="label">Capacity</label>
@@ -33,14 +42,25 @@
                 </div>
                 <div class="flex flex-col lg:flex-row gap-1.5">
                     <div class="w-full">
+                        <label class="label">Type</label>
+                        <DropdownCustom v-model="selectType" :options="typeCar" placeholder="Select type" header="Type"
+                            id="type" labelKey="name" valueKey="value" @change="updateType" />
+                    </div>
+                    <div class="w-full">
+                        <label class="label">Gasoline</label>
+                        <input type="number" v-model="form.gasoline" class="text-field" placeholder="Enter gasoline" />
+                    </div>
+                </div>
+                <div class="flex flex-col lg:flex-row gap-1.5">
+                    <div class="w-full">
                         <label class="label">Category</label>
                         <DropdownCustom v-model="selectedCategory" :options="categories" placeholder="Select cateogry"
                             header="Category" id="category" labelKey="name" valueKey="id" @change="updateCategoryId" />
                     </div>
                     <div class="w-full">
                         <label class="label">Brand</label>
-                        <DropdownCustom v-model="selectedBrand" :options="brands" placeholder="Select brand" header="Brand"
-                            id="brand" labelKey="name" valueKey="id" @change="updateBrandId" />
+                        <DropdownCustom v-model="selectedBrand" :options="brands" placeholder="Select brand"
+                            header="Brand" id="brand" labelKey="name" valueKey="id" @change="updateBrandId" />
                     </div>
                 </div>
                 <label class="label">Prices</label>
@@ -55,7 +75,8 @@
                         <input type="text" class="text-field" placeholder="Enter price amount"
                             :value="formatToIDR(price.amount)" @input="formatPrice($event, index)" />
                     </div>
-                    <button type="button" @click="removePrice(index)" class="text-red-500 hover:text-red-700 pt-0 lg:pt-2">
+                    <button type="button" @click="removePrice(index)"
+                        class="text-red-500 hover:text-red-700 pt-0 lg:pt-2">
                         <i class="ri-delete-bin-line text-xl hover:cursor-pointer"></i>
                     </button>
                 </div>
@@ -130,21 +151,29 @@ const props = defineProps({
     }
 });
 
+const currentYear = ref(new Date().getFullYear());
+
 const isEditing = computed(() => !!props.car);
 
 const toast = new Toast()
 
 const selectedCategory = ref(props.car?.category || null)
-const selectedBrand = ref(props.car?.brand || null)
-
-const fileInput = ref(null);
-const previewImages = ref([]);
-
 const priceTypes = [
     { id: 1, name: 'Auto Matic', value: 'automatic' },
     { id: 2, name: 'Manual', value: 'manual' },
     { id: 3, name: 'With Driver', value: 'with-driver' }
 ];
+
+const typeCar = [
+    { id: 1, name: 'Auto Matic', value: 'automatic' },
+    { id: 2, name: 'Manual', value: 'manual' },
+];
+const selectedBrand = ref(props.car?.brand || null)
+const selectType = ref(props.car ? typeCar.find(t => t.value === props.car.type) : null)
+
+const fileInput = ref(null);
+const previewImages = ref([]);
+
 
 const form = useForm({
     name: props.car?.name || '',
@@ -154,10 +183,12 @@ const form = useForm({
     })) || [{ type: null, amount: '' }],
     images: props.car?.images || [],
     new_images: [],
+    type: props.car?.type || null,
+    gasoline: props.car?.gasoline || '',
     description: props.car?.description || '',
     cc: props.car?.cc || '',
     capacity: props.car?.capacity || '',
-    year: props.car?.year || '',
+    year: props.car?.year ? new Date(props.car.year, 0, 1).getFullYear() : currentYear.value,
     category_id: props.car?.category_id || null,
     brand_id: props.car?.brand.id || null,
 
@@ -186,7 +217,18 @@ const getAvailablePriceTypes = (currentIndex) => {
         .map((price, index) => index !== currentIndex ? price.type?.id : null)
         .filter(Boolean);
 
-    return priceTypes.filter(type => !selectedTypes.includes(type.id));
+    // Filter price types based on car type
+    let availableTypes = priceTypes.filter(type => {
+        if (form.type === 'automatic') {
+            return type.value === 'automatic' || type.value === 'with-driver';
+        } else if (form.type === 'manual') {
+            return type.value === 'manual' || type.value === 'with-driver';
+        }
+        return true;
+    });
+
+    // Remove already selected types
+    return availableTypes.filter(type => !selectedTypes.includes(type.id));
 };
 const formatToIDR = (value) => {
     if (!value) return '';
@@ -212,6 +254,12 @@ const updateBrandId = (brand) => {
     form.brand_id = brand?.id || null;
 };
 
+const updateType = (type) => {
+    form.type = type?.value || null;
+
+    form.prices = [{ type: null, amount: '' }];
+};
+
 const handleFileChange = (event) => {
     const files = Array.from(event.target.files);
     const maxFiles = 5 - (previewImages.value.length + form.images.length);
@@ -225,7 +273,7 @@ const handleFileChange = (event) => {
             };
             reader.readAsDataURL(file);
             form.images.push(file);
-        }else{
+        } else {
             const reader = new FileReader();
             reader.onload = (e) => {
                 previewImages.value.push(e.target.result);
@@ -239,9 +287,9 @@ const handleFileChange = (event) => {
 const removeImage = (index) => {
     event.preventDefault();
     event.stopPropagation();
-    
+
     const existingImagesCount = form.images.length;
-    
+
     if (index < existingImagesCount) {
         // Removing existing image
         form.images.splice(index, 1);
@@ -261,7 +309,7 @@ const back = () => {
 const handleSubmit = () => {
     if (isEditing.value) {
         const formData = new FormData();
-        
+
         // Append basic form fields
         formData.append('_method', 'PUT');
         formData.append('name', form.name);
@@ -269,27 +317,31 @@ const handleSubmit = () => {
         formData.append('category_id', form.category_id);
         formData.append('brand_id', form.brand_id);
         formData.append('cc', form.cc);
-        formData.append('year', form.year);
+        formData.append('year', typeof form.year === 'object' ? form.year.getFullYear() : form.year);
         formData.append('capacity', form.capacity);
-        
+        formData.append('gasoline', form.gasoline);
+        formData.append('type', form.type);
+
         // Append existing images
         formData.append('images', JSON.stringify(form.images.map(img => img.id)));
-        
+
         // Append new images
         if (form.new_images.length > 0) {
             form.new_images.forEach(file => {
                 formData.append('new_images[]', file);
             });
         }
-        
+
         // Append prices
         formData.append('prices', JSON.stringify(form.prices));
-        
+
         router.post(`/car/${props.car.id}`, formData, {
             onSuccess: () => {
+                toast.success('Success edit car');
                 router.visit('/car');
             },
             onError: (errors) => {
+                toast.errors(errors.errors);
                 form.errors = errors.errors;
             },
         });
@@ -307,3 +359,10 @@ const handleSubmit = () => {
 
 }
 </script>
+
+<style scoped>
+.dp__main :deep(.dp__theme_light) {
+  --dp-primary-color: #AD2026;
+  --dp-primary-text-color: #fff;
+}
+</style>

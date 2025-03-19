@@ -7,7 +7,9 @@
     </div>
     <div class="border border-natural-200 px-4 py-3 bg-white mt-8 rounded-xl">
         <div class="overflow-x-auto">
-            <Search hint="Search by name" v-model="search"  @search="handleSearch" />
+            <div class="mb-2">
+                <Search hint="Search by name" v-model="search"  @search="handleSearch" />
+            </div>
             <table class="min-w-full bg-white border-none table-auto overflow-scroll w-full">
                 <thead class="bg-primary-100 border-none">
                     <tr class="text-primary-500">
@@ -15,6 +17,7 @@
                         <th class="py-4 px-4 text-sm font-medium text-left">Brand</th>
                         <th class="py-4 px-4 text-sm font-medium text-left">Category</th>
                         <th class="py-4 px-4 text-sm font-medium text-center">Year</th>
+                        <th class="py-4 px-4 text-sm font-medium text-center">Type</th>
                         <th class="py-4 px-4 text-sm font-medium text-center">Capacity</th>
                         <th class="py-4 px-4 text-sm font-medium text-left">Thumbnail</th>
                         <th class="py-4 px-4 text-sm font-medium text-left">Action</th>
@@ -35,9 +38,11 @@
                         </td>
                         <td class="py-5 px-4 border-b border-natural-200 text-xs font-normal text-center">{{ car.capacity }}
                         </td>
+                        <td class="py-5 px-4 border-b border-natural-200 text-xs font-normal text-center capitalize">{{ car.type }}
+                        </td>
                         <td class="py-5 px-4 border-b border-natural-200">
-                            <img :src="car.images && car.images.length > 0 ? `/storage/car/${car.images[0].image.split('/').pop()}` : '/images/no-image.png'"
-                                class="w-16 h-16 object-contain rounded-lg" alt="Car thumbnail" />
+                            <a-image :src="car.images && car.images.length > 0 ? `/storage/car/${car.images[0].image.split('/').pop()}` : '/images/no-image.png'"
+                                :width="64" />
                         </td>
                         <td class="py-5 px-4 border-b border-natural-200 text-xs font-normal ">
                             <div class="flex flex-row gap-2.5">

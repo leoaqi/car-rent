@@ -1,4 +1,7 @@
 <template>
+    <Head>
+        <title>Master Data Tour Package</title>
+    </Head>
     <div class="flex flex-row justify-between items-center">
         <h1 class="font-medium text-xl">Master Data Tour Package</h1>
         <ButtonAdd @click="router.visit('/tour/add')">
@@ -7,7 +10,9 @@
     </div>
     <div class="border border-natural-200 px-4 py-3 bg-white mt-8 rounded-xl">
         <div class="overflow-x-auto">
-            <Search hint="Search by name" v-model="search" @search="handleSearch" />
+            <div class="mb-2">
+                <Search hint="Search by name" v-model="search" @search="handleSearch" />
+            </div>
             <table class="min-w-full bg-white border-none table-auto overflow-scroll w-full">
                 <thead class="bg-primary-100 border-none">
                     <tr class="text-primary-500">
@@ -60,7 +65,7 @@
 <script setup>
 import AuthanticateLayout from '../Layout/AuthanticateLayout.vue'
 import ButtonAdd from '../Components/ButtonAdd.vue';
-import { router } from '@inertiajs/vue3'
+import { router, Head } from '@inertiajs/vue3'
 import Search from '../Components/SearchInput.vue';
 import { ref } from 'vue'
 import icEdit from '../../../../../public/icons/ic_edit.svg';

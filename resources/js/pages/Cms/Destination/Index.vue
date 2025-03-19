@@ -10,7 +10,9 @@
     </div>
     <div class="border border-natural-200 px-4 py-3 bg-white mt-8 rounded-xl">
         <div class="overflow-x-auto">
-            <Search hint="Search by name" v-model="search"  @search="handleSearch" />
+            <div class="mb-2">
+                <Search hint="Search by name" v-model="search"  @search="handleSearch" />
+            </div>
             <table class="min-w-full bg-white border-none table-auto overflow-scroll w-full">
                 <thead class="bg-primary-100 border-none">
                     <tr class="text-primary-500">

@@ -32,13 +32,17 @@
     @apply h-[14px] w-[14px] text-primary-500 rounded-[4px] accent-primary-500;
 }
 
+.footer-li{
+  @apply text-natural-600 text-sm font-poppins
+}
+
 /* Override default disabled styles */
 input[type="checkbox"]:disabled {
     opacity: 1 !important;
 }
 
 input[type="checkbox"]:disabled:checked {
-    background-color: theme('colors.primary.500') !important;
-    border-color: theme('colors.primary.500') !important;
+    /* background-color: theme('colors.primary.500') !important;
+    border-color: theme('colors.primary.500') !important; */
 }
 </style>

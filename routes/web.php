@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookingController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -7,14 +8,15 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CarController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DestinationController;
+use App\Http\Controllers\FronSite\CarController as FronSiteCarController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RentController;
 use App\Http\Controllers\TourPackageController;
 
 Route::middleware(['auth.user','prevent.back'])->group(function () {
-    Route::get('/', function () {
-        return Inertia::location('/dashboard');
-    });
+    // Route::get('/', function () {
+    //     return Inertia::location('/dashboard');
+    // });
     Route::get('/dashboard', function () {
         return Inertia::render('Cms/Dashboard/Index');
     });
@@ -54,6 +56,10 @@ Route::middleware(['auth.user','prevent.back'])->group(function () {
     Route::get('/tour/edit/{id}', [TourPackageController::class, 'edit'])->name('tour.edit');
     Route::put('/tour/{id}', [TourPackageController::class, 'update'])->name('tour.update');
     Route::delete('/tour/{id}', [TourPackageController::class, 'delete'])->name('tour.delete');
+    
+    Route::get('/booking', [BookingController::class, 'index'])->name('booking.index');
+    Route::get('/booking/{id}/edit', [BookingController::class, 'edit'])->name('booking.edit');
+
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     // Add other protected routes here
 });
@@ -64,6 +70,10 @@ Route::middleware(['guest'])
         Route::post('/login', [LoginController::class,'store'])->name('login.store');
         Route::get('/reset-password', [LoginController::class,'showResetPassword'])->name('login.resetPassword');
         Route::get('/forget-password', [LoginController::class,'showForgetPassword'])->name('login.forgetPassword');
+
+        Route::get('/', [FronSiteCarController::class, 'index'])->name('home');
+        Route::get('/car-detail/{id}', [FronSiteCarController::class, 'detail'])->name('detail-car');
+        Route::post('/rent', [RentController::class, 'rent'])->name('rent.store');
     });
 
 
