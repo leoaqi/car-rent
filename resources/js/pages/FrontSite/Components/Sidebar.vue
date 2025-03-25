@@ -6,22 +6,11 @@
                 <SearchInput @filter="handleFilter" />
             </div>
             <div class="flex flex-row gap-2 ml-auto">
-                <div
-                    class="rounded-full bg-primary w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-primary-400 transition-colors">
-                    <i class="ri-facebook-fill text-white text-xl"></i>
-                </div>
-                <div
-                    class="rounded-full bg-primary w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-primary-400 transition-colors">
-                    <i class="ri-instagram-line text-white text-xl"></i>
-                </div>
-                <div
-                    class="rounded-full bg-primary w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-primary-400 transition-colors">
-                    <i class="ri-tiktok-fill text-white text-xl"></i>
-                </div>
-                <div
-                    class="rounded-full bg-primary w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-primary-400 transition-colors">
-                    <i class="ri-youtube-fill text-white text-xl"></i>
-                </div>
+                <Link href="/tour"
+                    :class="{ 'text-primary': $page.url.startsWith('/tour'), 'hover:text-primary': !$page.url.startsWith('/tour-packages') }">
+                Tour Packages
+                </Link>
+
             </div>
         </div>
     </section>
@@ -30,7 +19,7 @@
 <script setup>
 import SearchInput from './SearchInput.vue'
 import logo from '../../../../../public/images/logo.png'
-import {router} from '@inertiajs/vue3'
+import { router, Link } from '@inertiajs/vue3'
 
 const handleFilter = () => {
     console.log('handleFilter');

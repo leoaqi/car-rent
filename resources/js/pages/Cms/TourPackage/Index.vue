@@ -90,12 +90,12 @@ const showModalDelete = ref(false)
 
 const handleSearch = () => {
     if (search.value.trim() === '') {
-        router.get('/tour', {}, {
+        router.get('/tour-package', {}, {
             preserveState: true,
             replace: true
         })
     } else {
-        router.get('/tour', {
+        router.get('/tour-package', {
             search: search.value
         }, {
             preserveState: true
@@ -104,7 +104,7 @@ const handleSearch = () => {
 }
 
 const handleDelete = () => {
-    router.delete(`/tour/${selectedTour.value.id}`, {
+    router.delete(`/tour-package/${selectedTour.value.id}`, {
         preserveScroll: true,
         onSuccess: () => {
             toast.success('Tour package has been deleted')
@@ -120,6 +120,6 @@ const onShowModalDelete = (data) => {
 }
 
 const editTourPackage = (data) => {
-    router.visit(`/tour/edit/${data.id}`)
+    router.visit(`/tour-package/edit/${data.id}`)
 }
 </script>

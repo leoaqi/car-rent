@@ -9,6 +9,7 @@ use App\Http\Controllers\CarController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DestinationController;
 use App\Http\Controllers\FronSite\CarController as FronSiteCarController;
+use App\Http\Controllers\FronSite\TourPackage;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RentController;
 use App\Http\Controllers\TourPackageController;
@@ -50,12 +51,12 @@ Route::middleware(['auth.user','prevent.back'])->group(function () {
     Route::get('/destination/{id}/edit', [DestinationController::class, 'edit'])->name('destination.edit');
     Route::put('/destination/{id}', [DestinationController::class, 'update'])->name('destination.update');
     
-    Route::get('/tour', [TourPackageController::class, 'index'])->name('tour.index');
-    Route::get('/tour/add', [TourPackageController::class, 'add'])->name('tour.add');
-    Route::post('/tour/add', [TourPackageController::class, 'store'])->name('tour.store');
-    Route::get('/tour/edit/{id}', [TourPackageController::class, 'edit'])->name('tour.edit');
-    Route::put('/tour/{id}', [TourPackageController::class, 'update'])->name('tour.update');
-    Route::delete('/tour/{id}', [TourPackageController::class, 'delete'])->name('tour.delete');
+    Route::get('/tour-package', [TourPackageController::class, 'index'])->name('tour.index');
+    Route::get('/tour-package/add', [TourPackageController::class, 'add'])->name('tour.add');
+    Route::post('/tour-package/add', [TourPackageController::class, 'store'])->name('tour.store');
+    Route::get('/tour-package/edit/{id}', [TourPackageController::class, 'edit'])->name('tour.edit');
+    Route::put('/tour-package/{id}', [TourPackageController::class, 'update'])->name('tour.update');
+    Route::delete('/tour-package/{id}', [TourPackageController::class, 'delete'])->name('tour.delete');
     
     Route::get('/booking', [BookingController::class, 'index'])->name('booking.index');
     Route::get('/booking/{id}/edit', [BookingController::class, 'edit'])->name('booking.edit');
@@ -74,6 +75,7 @@ Route::middleware(['guest'])
         Route::get('/', [FronSiteCarController::class, 'index'])->name('home');
         Route::get('/car-detail/{id}', [FronSiteCarController::class, 'detail'])->name('detail-car');
         Route::post('/rent', [RentController::class, 'rent'])->name('rent.store');
+        Route::get('/tour', [TourPackage::class, 'index'])->name('tour');
     });
 
 

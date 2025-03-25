@@ -181,11 +181,11 @@ const handleSubmit = () => {
     };
 
     if (isEditing.value) {
-        form.put(`/tour/${props.data.id}`, {
+        form.put(`/tour-package/${props.data.id}`, {
             data: formData,
             onSuccess: () => {
                 toast.success('Tour package updated successfully');
-                router.visit('/tour');
+                router.visit('/tour-package');
             },
             onError: (errors) => {
                 toast.errors(errors);
@@ -193,11 +193,11 @@ const handleSubmit = () => {
             },
         })
     } else {
-        form.post('/tour/add', {
+        form.post('/tour-package/add', {
             data: formData,
             onSuccess: () => {
                 toast.success('Tour package added successfully');
-                router.visit('/tour');
+                router.visit('/totour-packageur');
             },
             onError: (errors) => {
                 toast.errors(errors);
