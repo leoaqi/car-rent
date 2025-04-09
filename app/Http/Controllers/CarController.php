@@ -15,7 +15,7 @@ class CarController extends Controller
 {
     public function index(Request $request)
     {
-        $perPage = $request->input('per_page', 5);
+        $perPage = $request->input('per_page', 10);
         $cars = Car::with(['category', 'brand', 'images', 'prices'])
             ->when($request->search, function ($query, $search) {
                 $query->where('name', 'like', "%{$search}%")

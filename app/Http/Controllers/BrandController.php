@@ -13,7 +13,7 @@ class BrandController extends Controller
     public function index(Request $request)
     {
 
-        $perPage = $request->input('per_page', 5);
+        $perPage = $request->input('per_page', 10);
 
         return Inertia::render('Cms/Brand/Index', [
             'brandData' => Brand::query()

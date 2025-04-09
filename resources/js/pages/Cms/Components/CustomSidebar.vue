@@ -67,7 +67,7 @@ const menuItems = [
     { name: 'Car', slug: '/car', icon: 'ri-car-line' },
     { name: 'Rent', slug: '/rent', icon: 'ri-money-dollar-circle-line' },
     { name: 'Tourist Destination', slug: '/destination', icon: 'ri-road-map-line' },
-    { name: 'Tourist Package', slug: '/tour', icon: 'ri-plane-line' },
+    { name: 'Tourist Package', slug: '/tour-package', icon: 'ri-plane-line' },
     { name: 'Bookings', slug: '/booking', icon: 'ri-calendar-check-line' },
 ];
 </script>

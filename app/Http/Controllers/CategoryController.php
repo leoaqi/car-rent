@@ -12,7 +12,7 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
 
-        $perPage = $request->input('per_page', 5);
+        $perPage = $request->input('per_page', 10);
 
         $data = Category::query()
         ->paginate($perPage)

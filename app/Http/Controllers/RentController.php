@@ -12,12 +12,14 @@ class RentController extends Controller
 {
     public function index(Request $request)
     {
-        $perPage = $request->input('per_page', 5);
+        $perPage = $request->input('per_page', 10);
         $rents = Rent::with(['car.brand', 'car.category'])
             ->when($request->search, function ($query, $search) {
                 $query->where('name', 'like', "%{$search}%");
             })
-            ->paginate($perPage);
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage)
+            ;
 
         return Inertia::render('Cms/Rent/Index', [
             'data' => $rents,

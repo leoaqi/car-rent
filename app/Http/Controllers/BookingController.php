@@ -11,7 +11,7 @@ class BookingController extends Controller
 {
     public function index(Request $request){
 
-        $perPage = $request->input('per_page', 5);
+        $perPage = $request->input('per_page', 10);
         $search = $request->input('search');
         $paymentStatus = $request->input('payment_status');
         $bookingStatus = $request->input('booking_status');

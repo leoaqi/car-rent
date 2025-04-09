@@ -12,7 +12,7 @@ class DestinationController extends Controller
 {
     public function index(Request $request)
     {
-        $perPage = $request->input('per_page', 5);
+        $perPage = $request->input('per_page', 10);
         $destinations = Destination::with(['images'])
             ->when($request->search, function ($query, $search) {
                 $query->where('name', 'like', "%{$search}%");
