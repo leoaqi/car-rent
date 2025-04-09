@@ -4,20 +4,25 @@
         <title>Car Rent</title>
     </Head>
     <div class="bg-natural-400">
-        <div :class="{'fixed top-0 left-0 right-0 z-50': isScrolled}">
-            <Sidebar />
+        <div :class="{ 'fixed top-0 left-0 right-0 z-50': isScrolled }">
+            <Sidebar @filter="toogleFilter" :filter="selectedBrands.length || selectedCategories.length" />
         </div>
         <div class="flex flex-row gap-5 h-full">
-            <div class="w-[300px]  bg-white p-6 overflow-y-auto">
-                <div class="mb-8">
+            <!-- Filter -->
+            <div :class="{
+                'hidden': !isFilterVisible,
+                'w-[300px] bg-white p-6 overflow-y-auto': true,
+                'transform transition-transform duration-300 ease-in-out': true,
+                '-translate-x-fll': !isFilterVisible,
+                'translate-x-0': isFilterVisible
+            }">
+                <div class=" mb-8">
                     <h2 class="text-md font-medium  text-text-secondary  mb-2">Brands</h2>
                     <div class="space-y-2">
                         <div v-for="(count, brand) in brandCount" :key="brand" class="flex items-center">
-                            <input type="checkbox" 
-                                :disabled="count === 0" :id="brand" :value="brand"
-                                v-model="selectedBrands" 
-                                class="w-4 h-4 rounded accent-primary"
-                                :class="{'cursor-pointer': count > 0,'cursor-not-allowed' : count ===0}">
+                            <input type="checkbox" :disabled="count === 0" :id="brand" :value="brand"
+                                v-model="selectedBrands" class="w-4 h-4 rounded accent-primary"
+                                :class="{ 'cursor-pointer': count > 0, 'cursor-not-allowed': count === 0 }">
                             <label :for="brand" class="ml-2 text-text-primary" :class="{ 'opacity-50': count === 0 }">
                                 {{ brand }} ({{ count }})
                             </label>
@@ -29,28 +34,31 @@
                     <h2 class="text-md font-medium  text-text-secondary  mb-2">Categories</h2>
                     <div class="space-y-2">
                         <div v-for="(count, category) in categoryCount" :key="category" class="flex items-center">
-                            <input type="checkbox" 
-                                v-model="selectedCategories"
-                                :disabled="count === 0" :id="category" :value="category"
-                                class="w-4 h-4 rounded accent-primary"
-                                :class="{'cursor-pointer': count > 0,'cursor-not-allowed' : count ===0}">
-                            <label :for="category" class="ml-2  text-text-primary" :class="{ 'opacity-50': count === 0 }">
+                            <input type="checkbox" v-model="selectedCategories" :disabled="count === 0" :id="category"
+                                :value="category" class="w-4 h-4 rounded accent-primary"
+                                :class="{ 'cursor-pointer': count > 0, 'cursor-not-allowed': count === 0 }">
+                            <label :for="category" class="ml-2  text-text-primary"
+                                :class="{ 'opacity-50': count === 0 }">
                                 {{ category }} ({{ count }})
                             </label>
                         </div>
                     </div>
                 </div>
-                <Button v-if="selectedBrands.length > 0 || selectedCategories.length > 0" 
-                    title="Reset"
-                    class="max-w-[240px]"
-                    @click="handleReset"/>
+                <Button v-if="selectedBrands.length > 0 || selectedCategories.length > 0" title="Reset"
+                    class="max-w-[240px]" @click="handleReset" />
             </div>
             <div>
                 <!-- Section Hero -->
-                <section class="bg-natural-400 mt-5">
+                <section class="bg-natural-400" :class="{
+                    'mt-5': isFilterVisible
+                }">
                     <div class="relative">
-                        <img :src="prambanan" alt="" class="w-screen h-[300px] object-cover rounded-lg">
-                        <div class="absolute opacity-80 bg-primary inset-0 rounded-lg">
+                        <img :src="prambanan" alt="" class="w-screen h-[300px] object-cover" :class="{
+                            'rounded-lg': isFilterVisible,
+                        }">
+                        <div class="absolute opacity-80 bg-primary inset-0" :class="{
+                            'rounded-lg': isFilterVisible,
+                        }">
                         </div>
                         <div class="absolute inset-0 inset-x-24 inset-y-20">
                             <h1 class="text-white font-poppins font-bold text-3xl">Need a vehicle in Yogyakarta?</h1>
@@ -149,9 +157,9 @@
                                     </div>
                                 </div>
                                 <h1 class="text-md font-bold mt-3 text-text-primary font-poppins">{{
-                            formatCurrency(car.prices.find(price =>
-                                price.type ===
-                                car.type)?.price || 0) }} / <span
+                                    formatCurrency(car.prices.find(price =>
+                                        price.type ===
+                                        car.type)?.price || 0)}} / <span
                                         class="text-md text-natural-500 font-normal font-poppins">day</span></h1>
                                 <!-- <Button title="Rent Now" class="mt-3" @click="handleRent" /> -->
                             </div>
@@ -168,7 +176,7 @@
 import prambanan from '../../../../public/images/prambanan.jpg'
 import { formatCurrency } from '../../utils/format'
 import { Head, router, usePage } from '@inertiajs/vue3'
-import {ref, onMounted, onUnmounted, watch} from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import Sidebar from './Components/Sidebar.vue'
 import Footer from './Components/Footer.vue'
 import Button from '../Cms/Components/Button.vue'
@@ -186,19 +194,24 @@ console.log(props.categoryCount);
 const page = usePage()
 const selectedBrands = ref([])
 const selectedCategories = ref([])
+const isFilterVisible = ref(false)
+
+const toogleFilter = () => {
+    isFilterVisible.value = !isFilterVisible.value
+}
 
 onMounted(() => {
     const urlParams = new URLSearchParams(window.location.search)
     const brandParams = []
     const categoryParams = []
-    
+
     // Get all brand parameters
     for (const [key, value] of urlParams.entries()) {
         if (key.startsWith('brands[')) {
             brandParams.push(value)
         }
     }
-    
+
     if (brandParams.length > 0) {
         selectedBrands.value = brandParams
     }
@@ -213,9 +226,9 @@ onMounted(() => {
     if (categoryParams.length > 0) {
         selectedCategories.value = categoryParams
     }
-    
+
     console.log('Brand Params:', brandParams)
-    
+
 })
 
 
