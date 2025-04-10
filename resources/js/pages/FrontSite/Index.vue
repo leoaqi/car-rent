@@ -5,7 +5,8 @@
     </Head>
     <div class="bg-natural-400">
         <div :class="{ 'fixed top-0 left-0 right-0 z-50': isScrolled }">
-            <Sidebar @filter="toogleFilter" :filter="selectedBrands.length || selectedCategories.length" />
+            <Sidebar @filter="toogleFilter" :filter="!!(selectedBrands.length || selectedCategories.length)"
+                @search="handleSearch" v-model:search="search" />
         </div>
         <div class="flex flex-row gap-5 h-full">
             <!-- Filter -->
@@ -187,14 +188,11 @@ const props = defineProps({
     categoryCount: Object,
 })
 
-// console.log(props.data);
-console.log(props.brandCount);
-console.log(props.categoryCount);
-
 const page = usePage()
 const selectedBrands = ref([])
 const selectedCategories = ref([])
 const isFilterVisible = ref(false)
+const search = ref('')
 
 const toogleFilter = () => {
     isFilterVisible.value = !isFilterVisible.value
@@ -227,23 +225,43 @@ onMounted(() => {
         selectedCategories.value = categoryParams
     }
 
-    console.log('Brand Params:', brandParams)
+    const searchParam = urlParams.get('search')
+    if (searchParam) {
+        search.value = searchParam
+    }
 
 })
 
 
-watch([selectedBrands, selectedCategories], ([newBrands, newCategories]) => {
-    console.log('Current URL:', page.url)
-    console.log('New filters:', { brands: newBrands, categories: newCategories })
-    router.get('/', {
-        brands: newBrands,
-        categories: newCategories
-    }, {
+watch([selectedBrands, selectedCategories, search], ([newBrands, newCategories, newSearch]) => {
+    const params = {}
+    
+    if (newBrands.length > 0) params.brands = newBrands
+    if (newCategories.length > 0) params.categories = newCategories
+    if (newSearch) params.search = newSearch
+
+    router.get('/', params, {
         preserveState: true,
         preserveScroll: true,
         replace: true
     })
 })
+
+const handleSearch = (value) => {
+    search.value = value
+    console.log('Search:', search.value)
+
+    const params = {}
+    if (selectedBrands.value.length > 0) params.brands = selectedBrands.value
+    if (selectedCategories.value.length > 0) params.categories = selectedCategories.value
+    if (value) params.search = value
+
+    router.get('/', params, {
+        preserveState: true,
+        preserveScroll: true,
+        replace: true
+    })
+}
 
 const handleReset = () => {
     selectedBrands.value = []

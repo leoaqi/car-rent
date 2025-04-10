@@ -34,7 +34,12 @@ class CarController extends Controller
         if ($request->has('search') && !empty($request->search)) {
             $query->where(function ($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
+                    ->orWhere('type', 'like', '%' . $request->search . '%')
+                    ->orWhere('capacity', 'like', '%' . $request->search . '%')
                     ->orWhereHas('brand', function ($q) use ($request) {
+                        $q->where('name', 'like', '%' . $request->search . '%');
+                    })
+                    ->orWhereHas('category', function ($q) use ($request) {
                         $q->where('name', 'like', '%' . $request->search . '%');
                     });
             });

@@ -3,7 +3,13 @@
         <div class="bg-white px-11 lg:px-7 py-2 lg:py-4 flex flex-row border-b border-natural-200 items-center">
             <img :src="logo" alt="" class="w-16 h-16 object-contain cursor-pointer" v-on:click="backToRoute">
             <div class="pl-20">
-                <SearchInput @filter="handleFilter" :filter="filter"/>
+                <SearchInput 
+                    @filter="handleFilter" 
+                    :filter="filter"
+                    :model-value="modelValue"
+                    @search="handleSearch"
+                    @update:model-value="$emit('update:modelValue', $event)"
+                />
             </div>
             <div class="flex flex-row gap-2 ml-auto">
                 <Link href="/tour"
@@ -21,12 +27,16 @@ import SearchInput from './SearchInput.vue'
 import logo from '../../../../../public/images/logo.png'
 import { router, Link } from '@inertiajs/vue3'
 
-const emit = defineEmits(['filter'])
+const emit = defineEmits(['filter', 'update:modelValue', 'search'])
 
 const props = defineProps({
     filter: {
         type: Boolean,
         default: false
+    },
+    modelValue: {
+        type: String,
+        default: ''
     }
 })
 
@@ -37,5 +47,9 @@ const handleFilter = () => {
 
 const backToRoute = () => {
     router.visit('/')
+}
+
+const handleSearch = (value) => {
+    emit('search', value)
 }
 </script>

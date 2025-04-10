@@ -17,6 +17,7 @@
         "@vitejs/plugin-vue": "^5.2.1",
         "@vuepic/vue-datepicker": "^11.0.1",
         "ant-design-vue": "^4.2.6",
+        "floating-vue": "^5.2.2",
         "notyf": "^3.10.0",
         "remixicon": "^4.6.0",
         "tailwindcss": "^4.0.9",

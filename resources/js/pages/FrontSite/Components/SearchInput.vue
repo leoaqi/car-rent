@@ -8,11 +8,13 @@
         focus:outline-none overflow-hidden truncate pl-12 pr-10
         focus:border-primary-500 focus:ring-0 focus:ring-primary-500" aria-label="Search" />
     <!-- Close Icon Right -->
-    <div class="absolute right-4 top-1/2 -translate-y-1/2">
+    <div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2.5">
+      <i  class="ri-close-line text-natural-600 hover:text-natural-200 cursor-pointer"
+        @click="clearSearch"></i>
       <div class="relative cursor-pointer" @click="handleFilter">
-        <i class="ri-equalizer-2-line text-natural-600 hover:text-natural-200 " ></i>
+        <i v-tooltip="'Filter'" class="ri-equalizer-2-line text-natural-600 hover:text-natural-200 "></i>
         <div v-if="filter" class="absolute top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
-        
+
       </div>
     </div>
   </div>
@@ -37,16 +39,27 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'search', 'filter'])
 
 const updateValue = (event) => {
-  emit('update:modelValue', event.target.value)
+  const value = event.target.value
+  emit('update:modelValue', value)
+  // Trigger search on input change
+  // emit('search', value)
 }
 
-const handleSearch = () => {
-  emit('search', props.modelValue)
+const handleSearch = (event) => {
+  const value = event.target.value
+  emit('update:modelValue', value)
+  // Trigger search on input change
+  emit('search', value)
 }
 
 const handleFilter = () => {
   console.log('filter');
 
   emit('filter')
+}
+
+const clearSearch = () => {
+  emit('update:modelValue', '')
+  emit('search', '')
 }
 </script>

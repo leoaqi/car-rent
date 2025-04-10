@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Rent;
+use App\Notifications\RentNotification;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Notification;
 
 class RentController extends Controller
 {
@@ -18,8 +20,7 @@ class RentController extends Controller
                 $query->where('name', 'like', "%{$search}%");
             })
             ->orderBy('created_at', 'desc')
-            ->paginate($perPage)
-            ;
+            ->paginate($perPage);
 
         return Inertia::render('Cms/Rent/Index', [
             'data' => $rents,
@@ -51,7 +52,7 @@ class RentController extends Controller
                 return redirect()->back()->withErrors($validate)->withInput();
             }
 
-            $rent= Rent::create([
+            $rent = Rent::create([
                 'car_id' => $request->car_id,
                 'name' => $request->name,
                 'phone' => $request->phone,
@@ -80,9 +81,27 @@ class RentController extends Controller
                 'user' => $request->name,
                 'car_id' => $request->car_id,
                 'pickup_date' => $request->pickup_date,
-                'dropoff_date' => $request->dropoff_date
+                'dropoff_date' => $request->dropoff_date,
+                'rent id' => $rent->id,
             ]);
 
+            $message = "New Rent Request:\n" .
+                "Name: {$request->name}\n" .
+                "Phone: {$request->phone}\n" .
+                "Address: {$request->address}\n" .
+                "Town: {$request->town}\n" .
+                "Pickup Location: {$request->pickup_location}\n" .
+                "Pickup Date: {$request->pickup_date}\n" .
+                "Dropoff Location: {$request->dropoff_location}\n" .
+                "Dropoff Date: {$request->dropoff_date}\n" .
+                "Price: Rp " .number_format($request->price, 0, ',', '.') ."\n".
+                "Type: {$request->type}\n";
+
+            Notification::route('telegram', env('TELEGRAM_CHAT_ID'))
+                ->notify(new RentNotification([
+                    'message' => $message,
+                    'url' => url("/rent/{$rent->id}")
+                ]));
 
             return redirect()->back()->with('message', 'Rent request submitted successfully')->with('type', 'success');;
         } catch (\Throwable $th) {
